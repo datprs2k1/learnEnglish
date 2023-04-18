@@ -1,9 +1,14 @@
-import { Button } from 'antd';
-export default function Home() {
+import { NextPageWithLayout } from '@/models';
+import { HomeLayout } from '@/layouts';
+
+export const Index: NextPageWithLayout = () => {
   return (
-    <main>
+    <>
       <h1>Home</h1>
-      <Button type="primary">ABC</Button>
-    </main>
+    </>
   );
-}
+};
+
+Index.Layout = HomeLayout;
+
+export default Index;

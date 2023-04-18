@@ -18,7 +18,8 @@
       "@/*": ["./src/*"]
     },
     "suppressImplicitAnyIndexErrors": true,
-    "ignoreDeprecations": "5.0"
+    "ignoreDeprecations": "5.0",
+    "noImplicitAny": false
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
