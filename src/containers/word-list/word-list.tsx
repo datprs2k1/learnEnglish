@@ -1,16 +1,37 @@
 import { Word } from '@/components/home';
+import { Button } from 'antd';
 import { FC, useState, useEffect, useRef } from 'react';
 interface IWordListProps {}
 
 export const WordList: FC<IWordListProps> = (props) => {
-  const [solution, setSolution] = useState<string>('books');
+  const data = ['books', 'window', 'computer'];
   const [guess, setGuess] = useState<string>('');
   const guessRef = useRef<string>('');
 
+  const current = useRef<number>(0);
+
+  const [submitted, setSubmitted] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (current.current >= data.length) {
+      current.current = 0;
+    }
+
+    if (guess.length >= data[current.current].length) {
+      setSubmitted(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guess]);
+
   const handleInput = (key: string) => {
     if (key === '{enter}') {
-      guessRef.current = '';
-      setGuess(guessRef.current);
+      if (guessRef.current === data[current.current]) {
+        current.current += 1;
+        setGuess('');
+        guessRef.current = '';
+        setSubmitted(false);
+        console.log('AAAA', current.current);
+      }
     } else if (key === '{bksp}') {
       guessRef.current = guessRef.current.slice(0, -1);
       setGuess(guessRef.current);
@@ -34,7 +55,10 @@ export const WordList: FC<IWordListProps> = (props) => {
 
   return (
     <>
-      <Word solution={solution} data="book" submitted={guess.length >= solution.length} value={guess} />;
+      {data.map(
+        (word, i) =>
+          current.current === i && <Word key={i} value={guess} solution={word} data={word} submitted={submitted} />
+      )}
     </>
   );
 };

@@ -11,15 +11,10 @@ interface IWordProps {
 export const Word: FC<IWordProps> = ({ data, value, solution, submitted }) => {
   const [color, setColor] = useState<string[]>([]);
   useEffect(() => {
-    let color: string[] = [];
-    for (let i = 0; i < value.length; i++) {
-      if (value[i] == solution[i]) {
-        color.push('green');
-      } else {
-        color.push('gray');
-      }
+    if (submitted) {
+      const color = solution.split('').map((letter, i) => (letter === value[i] ? 'green' : 'yellow'));
+      setColor(color);
     }
-    setColor(color);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitted]);
 
@@ -45,10 +40,10 @@ export const Word: FC<IWordProps> = ({ data, value, solution, submitted }) => {
                 </div>
               </div>
               <div className="mt-12 md:mt-16 mx-8">
-                <span className="flex justify-start">Chọn thuật ngữ đúng</span>
-                <div className="mt-4">
+                <span className="flex justify-start text-2xl">Viết câu trả lời</span>
+                <div className="mt-8">
                   <div className="md:mx-4 w-full">
-                    <div className={`grid grid-cols-5 gap-4 mx-auto mb-1`}>
+                    <div className={`grid ${solution} ? grid-cols-${solution.length} : grid-cols-5 gap-4 mx-auto mb-1`}>
                       {solution.split('').map((letter, i) => (
                         <LetterBox key={i} letter={value[i]} color={color[i]} />
                       ))}
