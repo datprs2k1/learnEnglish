@@ -25,13 +25,10 @@ export const WordList: FC<IWordListProps> = (props) => {
 
   const handleInput = (key: string) => {
     if (key === '{enter}') {
-      if (guessRef.current === data[current.current]) {
-        current.current += 1;
-        setGuess('');
-        guessRef.current = '';
-        setSubmitted(false);
-        console.log('AAAA', current.current);
-      }
+      current.current += 1;
+      setGuess('');
+      guessRef.current = '';
+      setSubmitted(false);
     } else if (key === '{bksp}') {
       guessRef.current = guessRef.current.slice(0, -1);
       setGuess(guessRef.current);
