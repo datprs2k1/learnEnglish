@@ -1,4 +1,5 @@
 import 'antd/dist/reset.css';
+import '../../public/antd.min.css';
 import '@/styles/globals.css';
 
 import { AppPropsWithLayout } from '@/models';

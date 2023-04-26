@@ -1,5 +1,3 @@
-'use client';
-
 import { ReactNode, useState } from 'react';
 import { Layout, theme, Menu, Drawer, Button } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
