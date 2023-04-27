@@ -4,6 +4,9 @@ import { useAuth } from '@/hooks';
 
 const api = axios.create({
   baseURL: API_URL,
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
 });
 
 api.interceptors.request.use(

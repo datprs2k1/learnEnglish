@@ -2,13 +2,28 @@ import { FC } from 'react';
 import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { Form, Input, Space, Button, Row, Col, Upload, UploadProps } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
+import BaseService from '@/services/base-service';
 interface IFlashCardFormProps {}
 
 export const FlashCardForm: FC<IFlashCardFormProps> = (props) => {
+  const api = new BaseService();
+
   const [form] = useForm();
 
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
+  const onFinish = async (values: any) => {
+    const formData = new FormData();
+
+    console.log('Received values of form:', values);
+
+    formData.append('name', values.name);
+
+    await values.flashcards.map((item: any, index: number) => {
+      formData.append(`flashcards[${index}].term`, item.term);
+      formData.append(`flashcards[${index}].definition`, item.definition);
+      formData.append(`flashcards[${index}].image`, item.image?.fileList[0].originFileObj);
+    });
+
+    await api.post('FlashCard', formData);
   };
   return (
     <>
