@@ -21,6 +21,7 @@ export const FlashCardForm: FC<IFlashCardFormProps> = (props) => {
       formData.append(`flashcards[${index}].term`, item.term);
       formData.append(`flashcards[${index}].definition`, item.definition);
       formData.append(`flashcards[${index}].image`, item.image?.fileList[0].originFileObj);
+      formData.append(`flashcards[${index}].imagename`, item.image?.fileList[0].originFileObj.name);
     });
 
     await api.post('FlashCard', formData);
