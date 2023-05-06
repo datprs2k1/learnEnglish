@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { API_URL } from '@/app-setting';
+import { app } from '@/app-setting';
 import { useAuth } from '@/hooks';
 
-const api = axios.create({
-  baseURL: API_URL,
+export const api = axios.create({
+  baseURL: app.API_URL,
   headers: {
     'Content-Type': 'multipart/form-data',
   },
@@ -11,12 +11,12 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const { getOauth } = useAuth();
+    const { getToken } = useAuth();
 
-    const oauth = getOauth() || {};
+    const token = getToken() || {};
 
-    if (oauth.access_token) {
-      config.headers['Authorization'] = 'Bearer ' + oauth.access_token;
+    if (token.access_token) {
+      config.headers['Authorization'] = 'Bearer ' + token.access_token;
     }
     return config;
   },
@@ -26,12 +26,11 @@ api.interceptors.request.use(
 );
 
 const Refresh = async () => {
-  const { getOauth } = useAuth();
+  const { getToken } = useAuth();
 
-  const oauth = getOauth();
+  const token = getToken();
   const rs = await api.post('api/token/auth', {
-    grant_type: 'refresh_token',
-    refresh_token: oauth.refresh_token,
+    refresh_token: token.refresh_token,
   });
 
   return rs;
@@ -44,11 +43,11 @@ api.interceptors.response.use(
     return res.data;
   },
   async (err) => {
-    const { setOauth, setLogout } = useAuth();
+    const { setToken, logout } = useAuth();
 
     const originalConfig = err?.config;
 
-    if (originalConfig?.url !== 'api/token/auth' && err?.response) {
+    if ((originalConfig?.url !== app.LOGIN_URL || originalConfig?.url !== app.REGISTER_URL) && err?.response) {
       // Access Token was expired
       if (err?.response?.status === 401 && !originalConfig?._retry) {
         originalConfig._retry = true;
@@ -61,12 +60,12 @@ api.interceptors.response.use(
           refreshToken = null;
 
           if (rs.access_token) {
-            setOauth(rs);
+            setToken(rs);
           }
 
           return await api(originalConfig);
         } catch (_error) {
-          setLogout();
+          logout();
           window.location.href = '/login';
           return Promise.reject(_error);
         }
@@ -76,5 +75,3 @@ api.interceptors.response.use(
     return Promise.reject(err);
   }
 );
-
-export default api;

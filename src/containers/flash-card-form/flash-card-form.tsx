@@ -1,30 +1,58 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { Form, Input, Space, Button, Row, Col, Upload, UploadProps } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
-import BaseService from '@/services/base-service';
-interface IFlashCardFormProps {}
+import { api } from '@/services';
+interface IFlashCardFormProps {
+  action: string;
+}
 
-export const FlashCardForm: FC<IFlashCardFormProps> = (props) => {
-  const api = new BaseService();
-
+export const FlashCardForm: FC<IFlashCardFormProps> = ({ action }) => {
   const [form] = useForm();
+
+  const [add, setAdd] = useState<string[]>([]);
+  const [remove, setRemove] = useState<any[]>([]);
 
   const onFinish = async (values: any) => {
     const formData = new FormData();
 
-    console.log('Received values of form:', values);
-
     formData.append('name', values.name);
 
-    await values.flashcards.map((item: any, index: number) => {
-      formData.append(`flashcards[${index}].term`, item.term);
-      formData.append(`flashcards[${index}].definition`, item.definition);
-      formData.append(`flashcards[${index}].image`, item.image?.fileList[0].originFileObj);
-      formData.append(`flashcards[${index}].imagename`, item.image?.fileList[0].originFileObj.name);
-    });
+    if (action === 'edit') {
+      var addList = values.flashcards.filter((item: any) => {
+        return add.includes(item.id);
+      });
 
-    await api.post('FlashCard', formData);
+      var removeList = remove.filter((item: any) => {
+        return !values.flashcards.includes(item);
+      });
+
+      if (addList.length > 0) {
+        await addList.map((item: any, index: number) => {
+          formData.append(`add[${index}].term`, item.term);
+          formData.append(`add[${index}].definition`, item.definition);
+          formData.append(`add[${index}].image`, item.image?.fileList[0].originFileObj);
+          formData.append(`add[${index}].imagename`, item.image?.fileList[0].originFileObj.name);
+        });
+      }
+
+      if (removeList.length > 0) {
+        await removeList.map((item: any, index: number) => {
+          formData.append(`remove[${index}]`, item);
+        });
+      }
+
+      await api.put('FlashCard', formData);
+    } else {
+      await values.flashcards.map((item: any, index: number) => {
+        formData.append(`flashcards[${index}].term`, item.term);
+        formData.append(`flashcards[${index}].definition`, item.definition);
+        formData.append(`flashcards[${index}].image`, item.image?.fileList[0].originFileObj);
+        formData.append(`flashcards[${index}].imagename`, item.image?.fileList[0].originFileObj.name);
+      });
+
+      await api.post('FlashCard', formData);
+    }
   };
   return (
     <>
@@ -40,7 +68,7 @@ export const FlashCardForm: FC<IFlashCardFormProps> = (props) => {
           <Input size="large" />
         </Form.Item>
         <Form.List name="flashcards">
-          {(fields, { add, remove }) => (
+          {(fields, { add: addItem, remove: removeItem }) => (
             <>
               {fields.map(({ key, name, ...restField }, index) => (
                 <Space
@@ -80,11 +108,25 @@ export const FlashCardForm: FC<IFlashCardFormProps> = (props) => {
                       </Form.Item>
                     </Col>
                   </Row>
-                  <MinusCircleOutlined className="ml-6 text-2xl md:text-base" onClick={() => remove(name)} />
+                  <MinusCircleOutlined
+                    className="ml-6 text-2xl md:text-base"
+                    onClick={() => {
+                      if (action === 'edit') setRemove([...remove, form.getFieldValue(['flashcards', name, 'id'])]);
+                      removeItem(name);
+                    }}
+                  />
                 </Space>
               ))}
               <Form.Item>
-                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                <Button
+                  type="dashed"
+                  onClick={() => {
+                    addItem();
+                    if (action === 'edit') setAdd([...add, form.getFieldValue(['flashcards', fields.length, 'id'])]);
+                  }}
+                  block
+                  icon={<PlusOutlined />}
+                >
                   Add field
                 </Button>
               </Form.Item>

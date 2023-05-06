@@ -7,7 +7,7 @@ export const Create: NextPageWithLayout = () => {
   return (
     <>
       <h1>Create</h1>
-      <FlashCardForm />
+      <FlashCardForm action="edit" />
     </>
   );
 };
