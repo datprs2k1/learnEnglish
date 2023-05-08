@@ -72,18 +72,37 @@ export const FlashCardForm: FC<IFlashCardFormProps> = ({ action }) => {
             <>
               {fields.map(({ key, name, ...restField }, index) => (
                 <Space
+                  size="large"
                   key={key}
                   align="baseline"
                   className="bg-slate-200 rounded-md md:rounded-xl px-4 flex justify-between items-center mb-4 w-full h-72 md:h-32"
                 >
                   <Row gutter={16} justify="center" align="middle" className="mt-10 md:mt-5 w-full">
                     <Col xs={{ span: 24 }} md={{ span: 10 }}>
-                      <Form.Item {...restField} name={[name, 'term']}>
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'term']}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng nhập thuật ngữ',
+                          },
+                        ]}
+                      >
                         <Input size="large" placeholder="Thuật ngữ" />
                       </Form.Item>
                     </Col>
                     <Col xs={{ span: 24 }} md={{ span: 10 }}>
-                      <Form.Item {...restField} name={[name, 'definition']}>
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'definition']}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng nhập định nghĩa',
+                          },
+                        ]}
+                      >
                         <Input size="large" placeholder="Định nghĩa" />
                       </Form.Item>
                     </Col>
@@ -96,7 +115,16 @@ export const FlashCardForm: FC<IFlashCardFormProps> = ({ action }) => {
                       >
                         {() => {
                           return (
-                            <Form.Item {...restField} name={[name, 'image']}>
+                            <Form.Item
+                              {...restField}
+                              name={[name, 'image']}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: 'Vui lòng chọn ảnh',
+                                },
+                              ]}
+                            >
                               <Upload listType="picture-card" maxCount={1} beforeUpload={() => false} multiple={false}>
                                 {form.getFieldValue(['flashcards', name, 'image'])?.fileList.length > 0
                                   ? null

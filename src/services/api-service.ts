@@ -15,8 +15,8 @@ api.interceptors.request.use(
 
     const token = getToken() || {};
 
-    if (token.access_token) {
-      config.headers['Authorization'] = 'Bearer ' + token.access_token;
+    if (token.accessToken) {
+      config.headers['Authorization'] = 'Bearer ' + token.accessToken;
     }
     return config;
   },
@@ -29,8 +29,8 @@ const Refresh = async () => {
   const { getToken } = useAuth();
 
   const token = getToken();
-  const rs = await api.post('api/token/auth', {
-    refresh_token: token.refresh_token,
+  const rs = await api.post('api/User/refresh', {
+    refreshToken: token.refreshToken,
   });
 
   return rs;
@@ -59,14 +59,13 @@ api.interceptors.response.use(
 
           refreshToken = null;
 
-          if (rs.access_token) {
+          if (rs.accessToken) {
             setToken(rs);
           }
 
           return await api(originalConfig);
         } catch (_error) {
           logout();
-          window.location.href = '/login';
           return Promise.reject(_error);
         }
       }
