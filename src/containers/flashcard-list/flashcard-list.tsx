@@ -5,28 +5,18 @@ import Link from 'next/link';
 import { PlusOutlined } from '@ant-design/icons';
 import { FlashCardListForm } from '@/containers';
 import { useFlashCard } from '@/hooks';
-import { is } from './../../../.next/static/chunks/amp';
+import { useSWRConfig } from 'swr';
+
 interface IFlashCardListProps {
-  type?: 'my' | 'learn' | 'discover';
+  type?: 'my' | 'learn' | 'public';
+  data: any[];
 }
 
-export const FlashCardList: FC<IFlashCardListProps> = ({ type = 'my' }) => {
+export const FlashCardList: FC<IFlashCardListProps> = ({ type = 'my', data }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [action, setAction] = useState<string>('');
-  const [data, setData] = useState<any[]>([]);
 
-  const { GetList } = useFlashCard();
-
-  const getData = async () => {
-    const res = await GetList(type);
-    console.log(res);
-    setData(res);
-  };
-
-  useEffect(() => {
-    getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type]);
+  const { mutate } = useSWRConfig();
 
   const renderTitle = () => {
     switch (type) {
@@ -34,7 +24,7 @@ export const FlashCardList: FC<IFlashCardListProps> = ({ type = 'my' }) => {
         return 'List từ của tôi';
       case 'learn':
         return 'Đang học';
-      case 'discover':
+      case 'public':
         return 'Khám phá';
       default:
         return 'List từ của tôi';
@@ -49,7 +39,7 @@ export const FlashCardList: FC<IFlashCardListProps> = ({ type = 'my' }) => {
   const onClose = (isRefresh: boolean) => {
     setIsOpen(false);
     if (isRefresh) {
-      mutate();
+      mutate('/api/flashcard');
     }
   };
 
@@ -75,9 +65,9 @@ export const FlashCardList: FC<IFlashCardListProps> = ({ type = 'my' }) => {
             </Card>
           </Col>
         )}
-        {data && data.map((x) => <FlashCardListItem data={x} key={x.id} />)}
+        {data && data.map((x: any) => <FlashCardListItem data={x} key={x.id} />)}
       </Row>
-      <Row gutter={[24, 24]} className="mt-10" justify="end">
+      <Row gutter={[24, 24]} className="mt-20" justify="end">
         <Pagination
           defaultCurrent={1}
           total={100}
@@ -87,7 +77,7 @@ export const FlashCardList: FC<IFlashCardListProps> = ({ type = 'my' }) => {
           onChange={onChange}
         />
       </Row>
-      {type === 'my' && <FlashCardListForm isOpen={isOpen} onClose={onClose} />}
+      {type === 'my' && <FlashCardListForm isOpen={isOpen} onClose={onClose} action={action} />}
     </>
   );
 };

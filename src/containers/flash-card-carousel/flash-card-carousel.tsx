@@ -1,22 +1,23 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Carousel, ConfigProvider, Progress } from 'antd';
 import { CarouselRef } from 'antd/es/carousel';
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { FlipCard } from '@/components/home';
 
 interface IFlashCardCarouselProps {
   data: any;
+  id: any;
   handleChange: (current: number) => void;
 }
 
-export const FlashCardCarousel: FC<IFlashCardCarouselProps> = ({ data, handleChange }) => {
+export const FlashCardCarousel: FC<IFlashCardCarouselProps> = ({ data, handleChange, id }) => {
   const carousel = useRef<CarouselRef>(null);
 
   const [currentSlide, setCurrentSlide] = useState<number>(0);
 
-  const onChange = (from: number, to: number) => {
-    setCurrentSlide(from);
-    handleChange(to + 1);
+  const onChange = (currentSlide: number) => {
+    setCurrentSlide(currentSlide);
+    handleChange(currentSlide + 1);
   };
 
   const update = async (type: number) => {
@@ -32,25 +33,15 @@ export const FlashCardCarousel: FC<IFlashCardCarouselProps> = ({ data, handleCha
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-8 mb-10 text-xl">
-        <div className="text-start">
-          <span className=" text-orange-600 font-semibold mr-2 px-5 py-0.5 rounded-full border-solid border-orange-600">
-            11
-          </span>
-          <span className="font-medium md:text-xl">Đang học</span>
-        </div>
-        <div className="text-right font-semibold">
-          <span className="font-medium md:text-xl mr-2">Đã biết</span>
-          <span className=" text-green-600 font-semibold px-5 py-0.5 rounded-full border-solid border-green-600">
-            11
-          </span>
-        </div>
-      </div>
+      <h1 className="text-center text-2xl">
+        Đang học: {currentSlide + 1}/{data?.length}
+      </h1>
+
       <div className="relative h-[320px] md:h-[480px] bg-slate-200 rounded-md md:rounded-md">
-        <Carousel ref={carousel} dots={false} beforeChange={onChange} effect="scrollx">
+        <Carousel ref={carousel} dots={false} afterChange={onChange} effect="scrollx">
           {data.map((value, index) => (
             <div key={index}>
-              <FlipCard front={value.front} back={value.back} image={value.image} />
+              <FlipCard front={value.term} back={value.definition} image={value.imageName} id={id} />
             </div>
           ))}
         </Carousel>
@@ -69,7 +60,7 @@ export const FlashCardCarousel: FC<IFlashCardCarouselProps> = ({ data, handleCha
                 type="primary"
                 size="large"
                 shape="circle"
-                icon={<CloseOutlined />}
+                icon={<LeftOutlined />}
                 onClick={() => onLearn(1)}
                 ghost
               />
@@ -88,7 +79,7 @@ export const FlashCardCarousel: FC<IFlashCardCarouselProps> = ({ data, handleCha
                 type="primary"
                 size="large"
                 shape="circle"
-                icon={<CheckOutlined />}
+                icon={<RightOutlined />}
                 onClick={() => onLearn(1)}
                 ghost
               />

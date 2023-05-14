@@ -4,3 +4,4 @@ export * from './word-list';
 export * from './flash-card-form';
 export * from './flashcard-list';
 export * from './flash-card-list-form';
+export * from './flashcard-list-word';

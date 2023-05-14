@@ -44,6 +44,16 @@ export const useAuth = () => {
     deleteCookie('token');
   };
 
+  const getInfo = async () => {
+    const res: any = await api.get(app.GET_USER_INFO_URL);
+    return res;
+  };
+
+  const updateInfo = async (data: any) => {
+    const res: any = await api.put(app.GET_USER_INFO_URL, data);
+    return res;
+  };
+
   return {
     getUser,
     getToken,
@@ -52,5 +62,7 @@ export const useAuth = () => {
     login,
     register,
     logout,
+    getInfo,
+    updateInfo,
   };
 };

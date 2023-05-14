@@ -3,14 +3,16 @@ import { useState, useEffect } from 'react';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import { SoundOutlined } from '@ant-design/icons';
 import { Image } from 'antd';
+import { app } from '@/app-setting';
 
 interface IFlipCardProps {
   front: string;
   back: string;
   image: string;
+  id: string;
 }
 
-export const FlipCard: FC<IFlipCardProps> = ({ front, back, image }) => {
+export const FlipCard: FC<IFlipCardProps> = ({ front, back, image, id }) => {
   const [open, setOpen] = useState(false);
   const { speak } = useSpeechSynthesis();
 
@@ -35,13 +37,13 @@ export const FlipCard: FC<IFlipCardProps> = ({ front, back, image }) => {
                 className="ml-2 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
-                  speak({ text: getTextToSpeech('Spectator (v,n)') });
+                  speak({ text: getTextToSpeech(front) });
                 }}
               >
                 <SoundOutlined />
               </span>
             </div>
-            <span className="text-2xl md:text-3xl">Spectator (n) {front}</span>
+            <span className="text-2xl md:text-3xl">{front}</span>
           </div>
         </div>
         <div className="absolute [transform:rotateX(180deg)] [backface-visibility:hidden] h-full w-full flex justify-center items-center">
@@ -49,7 +51,12 @@ export const FlipCard: FC<IFlipCardProps> = ({ front, back, image }) => {
             <span className="top-4 left-4 absolute md:text-xl text-bold">Định nghĩa</span>
             <span className="flex justify-center items-center break-words text-2xl md:text-3xl">{back}</span>
             <div className="flex justify-center items-center">
-              <Image src={image} className="object-fill rounded-3xl" rootClassName="w-full md:w-3/4" alt="Image" />
+              <Image
+                src={`${app.RESOURCE_URL}/images/flashcards/${id}/${image}`}
+                className="object-fill rounded-3xl"
+                rootClassName="w-full md:w-3/4"
+                alt="Image"
+              />
             </div>
           </div>
         </div>

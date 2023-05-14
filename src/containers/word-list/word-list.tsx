@@ -1,10 +1,13 @@
 import { Word } from '@/components/home';
-import { Button } from 'antd';
+import { Button, Result } from 'antd';
 import { FC, useState, useEffect, useRef } from 'react';
-interface IWordListProps {}
+interface IWordListProps {
+  data: any[];
+  id: any;
+}
 
-export const WordList: FC<IWordListProps> = (props) => {
-  const data = ['books', 'window', 'computer'];
+export const WordList: FC<IWordListProps> = ({ data, id }) => {
+  const [list, setList] = useState<any[]>([]);
   const [guess, setGuess] = useState<string>('');
   const guessRef = useRef<string>('');
 
@@ -12,12 +15,19 @@ export const WordList: FC<IWordListProps> = (props) => {
 
   const [submitted, setSubmitted] = useState<boolean>(false);
 
+  const [score, setScore] = useState<number>(0);
+
   useEffect(() => {
-    if (current.current >= data.length) {
+    let a = data?.sort(() => Math.random() - 0.5);
+    setList(a);
+  }, [data]);
+
+  useEffect(() => {
+    if (current.current >= list.length) {
       current.current = 0;
     }
 
-    if (guess.length >= data[current.current].length) {
+    if (guess.length >= list[current.current]?.term.replace(/\(.*\)/gm, '').trim().length) {
       setSubmitted(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,6 +51,10 @@ export const WordList: FC<IWordListProps> = (props) => {
     }
   };
 
+  const onCorrect = () => {
+    setScore(score + 1);
+  };
+
   useEffect(() => {
     window.addEventListener('keyup', (e) => {
       e.preventDefault();
@@ -52,10 +66,22 @@ export const WordList: FC<IWordListProps> = (props) => {
 
   return (
     <>
-      {data.map(
+      {list?.map(
         (word, i) =>
-          current.current === i && <Word key={i} value={guess} solution={word} data={word} submitted={submitted} />
+          current.current === i && (
+            <Word
+              key={i}
+              value={guess}
+              solution={list[i].term.replace(/\(.*\)/gm, '').trim()}
+              data={word}
+              submitted={submitted}
+              onCorrect={onCorrect}
+              id={id}
+            />
+          )
       )}
+      {current.current === list?.length &&
+        ((current.current = 0), (<Result status="success" title={`Kết quả ${score}/${list?.length}`} />))}
     </>
   );
 };

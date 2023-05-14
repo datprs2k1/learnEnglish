@@ -1,19 +1,29 @@
 import { FC, useState, useEffect } from 'react';
 import { Image, Button, Badge } from 'antd';
 import { LetterBox } from './letter-box';
+import { app } from '@/app-setting';
 interface IWordProps {
   value: string;
   solution: string;
-  data: string;
+  data: any;
   submitted: boolean;
+  onCorrect: any;
+  id: string;
 }
 
-export const Word: FC<IWordProps> = ({ data, value, solution, submitted }) => {
+export const Word: FC<IWordProps> = ({ data, value, solution, submitted, onCorrect, id }) => {
   const [color, setColor] = useState<string[]>([]);
   useEffect(() => {
     if (submitted) {
-      const color = solution.split('').map((letter, i) => (letter === value[i] ? 'green' : 'yellow'));
+      const color = solution
+        .split('')
+        .map((letter, i) => (letter.toUpperCase() === value[i].toUpperCase() ? 'green' : 'yellow'));
+
       setColor(color);
+
+      if (value.toUpperCase() === solution.toUpperCase()) {
+        onCorrect();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitted]);
@@ -27,10 +37,10 @@ export const Word: FC<IWordProps> = ({ data, value, solution, submitted }) => {
               <div className="w-full">
                 <span className="top-4 left-8 absolute md:text-xl text-bold">Định nghĩa</span>
                 <div className="mt-12 md:mt-16 grid grid-cols-2 gap-8 mx-8 ">
-                  <span className="flex justify-start break-words text-xl">{data}</span>
+                  <span className="flex justify-start break-words text-xl">{data.definition as string}</span>
                   <div className="flex justify-end">
                     <Image
-                      src="https://farm1.staticflickr.com/6/10835124_3e93a151e0.jpg"
+                      src={`${app.RESOURCE_URL}/images/flashcards/${id}/${data.imageName}`}
                       className="object-fill w-full md:w-3/4 rounded-3xl"
                       height={104}
                       width={104}
@@ -45,11 +55,27 @@ export const Word: FC<IWordProps> = ({ data, value, solution, submitted }) => {
                   <div className="md:mx-4 w-full">
                     <div className={`grid ${solution} ? grid-cols-${solution.length} : grid-cols-5 gap-4 mx-auto mb-1`}>
                       {solution.split('').map((letter, i) => (
-                        <LetterBox key={i} letter={value[i]} color={color[i]} />
+                        <LetterBox key={i} letter={value[i] || ''} color={color[i]} />
                       ))}
                     </div>
                   </div>
                 </div>
+
+                {submitted && (
+                  <div className="mt-10">
+                    <span className="flex justify-start text-2xl">Đáp án</span>
+                    <div className="md:mx-4 w-full mt-5">
+                      <div
+                        className={`grid ${solution} ? grid-cols-${solution.length} : grid-cols-5 gap-4 mx-auto mb-1`}
+                      >
+                        {solution.split('').map((letter, i) => (
+                          <LetterBox key={i} letter={solution[i]} color="green" />
+                        ))}
+                      </div>
+                      <h1 className="mt-10">Nhấn phím Entert để tiếp tục.</h1>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

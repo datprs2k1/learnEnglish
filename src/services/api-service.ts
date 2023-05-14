@@ -29,8 +29,9 @@ const Refresh = async () => {
   const { getToken } = useAuth();
 
   const token = getToken();
-  const rs = await api.post('api/User/refresh', {
+  const rs = await api.post(app.REFRESH_TOKEN_URL, {
     refreshToken: token.refreshToken,
+    accessToken: token.accessToken,
   });
 
   return rs;

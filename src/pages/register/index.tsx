@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Input, Button, Form, Checkbox } from 'antd';
+import { Input, Button, Form, Checkbox, notification } from 'antd';
 import Link from 'next/link';
 import Image from 'next/image';
 import { HomeLayout } from '@/layouts';
@@ -13,8 +13,16 @@ export const Register: NextPageWithLayout = () => {
   const onSubmit = async (data: RegisterType) => {
     try {
       const res = await register(data);
-    } catch (error) {
-      console.log(error);
+
+      notification.success({
+        message: 'Thông báo',
+        description: 'Đăng ký thành công',
+      });
+    } catch (error: any) {
+      notification.error({
+        message: 'Thông báo',
+        description: error.message,
+      });
     }
   };
 

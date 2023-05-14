@@ -4,8 +4,7 @@ import { useFlashCard, useAuth } from '@/hooks';
 import { useForm } from 'antd/lib/form/Form';
 import useSWR from 'swr';
 
-interface IFlashCardListFormProps {
-  id?: any;
+interface IUserFormProps {
   action?: string;
   isOpen: boolean;
   onClose(isRefresh: boolean): void;
@@ -13,35 +12,31 @@ interface IFlashCardListFormProps {
 
 const defaultValue = {
   name: '',
-  isPublic: true,
+  email: '',
 };
 
-export const FlashCardListForm: FC<IFlashCardListFormProps> = ({ id, action, isOpen, onClose }) => {
+export const UserForm: FC<IUserFormProps> = ({ action, isOpen, onClose }) => {
   const [form] = useForm();
-  const { AddList, UpdateList } = useFlashCard();
-  const { GetById } = useFlashCard();
-  const { data, isLoading, mutate } = useSWR(id ? `/api/flashcard/${id}` : null, () => GetById(id));
+  const { getUser, getInfo, updateInfo } = useAuth();
+  const id = getUser()?.id;
+  const { data, isLoading, mutate } = useSWR(id ? `/api/user/${id}` : null, () => getInfo());
 
   const onSubmit = async (data: any) => {
     try {
       const formData = new FormData();
       formData.append('name', data.name);
-      formData.append('isPublic', data.isPublic);
-      if (action == 'add') {
-        await AddList(formData);
-        notification.success({
-          message: 'Thông báo',
-          description: 'Thêm thành công',
-        });
-      } else {
-        await UpdateList(id, formData);
-        notification.success({
-          message: 'Thông báo',
-          description: 'Sửa thành công',
-        });
-      }
+      formData.append('email', data.email);
+
+      await updateInfo(formData);
+
+      notification.success({
+        message: 'Thông báo',
+        description: 'Sửa thành công',
+      });
 
       form.resetFields();
+
+      mutate();
 
       await onClose(true);
       await mutate();
@@ -58,7 +53,9 @@ export const FlashCardListForm: FC<IFlashCardListFormProps> = ({ id, action, isO
   };
 
   useEffect(() => {
-    form.setFieldsValue(data);
+    if (data) {
+      form.setFieldsValue(data);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
@@ -70,22 +67,31 @@ export const FlashCardListForm: FC<IFlashCardListFormProps> = ({ id, action, isO
           onFinish={onSubmit}
           autoComplete="on"
           form={form}
-          initialValues={id ? data : defaultValue}
+          initialValues={isOpen ? data : defaultValue}
         >
           <Form.Item
             name="name"
-            label="Tên danh sách"
+            label="Tên"
             rules={[
               {
                 required: true,
-                message: 'Vui lòng nhập tên danh sách',
+                message: 'Vui lòng nhập tên',
               },
             ]}
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Công khai" valuePropName="checked" name="isPublic">
-            <Switch />
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[
+              {
+                required: true,
+                message: 'Vui lòng nhập email',
+              },
+            ]}
+          >
+            <Input disabled={true} />
           </Form.Item>
         </Form>
       </Modal>

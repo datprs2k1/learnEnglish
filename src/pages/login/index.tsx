@@ -1,14 +1,16 @@
 import { FC } from 'react';
-import { Input, Button, Form, Checkbox } from 'antd';
+import { Input, Button, Form, Checkbox, notification } from 'antd';
 import Link from 'next/link';
 import Image from 'next/image';
 import { HomeLayout } from '@/layouts';
 import { useAuth } from '@/hooks';
 import { LoginType } from '@/types';
 import { NextPageWithLayout } from '@/models';
+import { useRouter } from 'next/router';
 
 export const Login: NextPageWithLayout = () => {
   const { login, setUser, setToken } = useAuth();
+  const router = useRouter();
 
   const onSubmit = async (data: LoginType) => {
     try {
@@ -18,8 +20,18 @@ export const Login: NextPageWithLayout = () => {
         setToken(res.token);
         setUser(res.user);
       }
-    } catch (error) {
-      console.log(error);
+
+      notification.success({
+        message: 'Thông báo',
+        description: 'Đăng nhập thành công',
+      });
+
+      router.push('/flashcard');
+    } catch (error: any) {
+      notification.error({
+        message: 'Thông báo',
+        description: error.message,
+      });
     }
   };
 

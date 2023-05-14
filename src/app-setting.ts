@@ -1,6 +1,9 @@
 export const app = {
   API_URL: 'https://localhost:7136/api',
+  RESOURCE_URL: 'https://localhost:7136/Resources',
   LOGIN_URL: '/User/login',
   REGISTER_URL: '/User/register',
-  GET_LIST_FLASHCARD_URL: '/FlashCard',
+  REFRESH_TOKEN_URL: '/User/refresh',
+  FLASHCARD_URL: '/FlashCard',
+  GET_USER_INFO_URL: '/User',
 };

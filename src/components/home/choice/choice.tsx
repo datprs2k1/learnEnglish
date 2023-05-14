@@ -1,11 +1,21 @@
 import { FC } from 'react';
 import { Image, Button, Badge } from 'antd';
+import { app } from '@/app-setting';
 interface IChoiceProps {
   data: any;
   hanleClick: any;
+  id: string;
 }
 
-export const Choice: FC<IChoiceProps> = ({ data, hanleClick }) => {
+export const Choice: FC<IChoiceProps> = ({ data, hanleClick, id }) => {
+  const handle = (answer: any) => {
+    if (data.definition === answer) {
+      hanleClick(true);
+    } else {
+      hanleClick(false);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col justify-center items-center text-center mx-auto rounded-md md:rounded-xl">
@@ -15,10 +25,10 @@ export const Choice: FC<IChoiceProps> = ({ data, hanleClick }) => {
               <div className="w-full">
                 <span className="top-4 left-8 absolute md:text-xl text-bold">Định nghĩa</span>
                 <div className="mt-12 md:mt-16 grid grid-cols-2 gap-8 mx-8 ">
-                  <span className="flex justify-start break-words text-xl">{data}</span>
+                  <span className="flex justify-start break-words text-xl">{data.term}</span>
                   <div className="flex justify-end">
                     <Image
-                      src="https://farm1.staticflickr.com/6/10835124_3e93a151e0.jpg"
+                      src={`${app.RESOURCE_URL}/images/flashcards/${id}/${data.imageName}`}
                       className="object-fill w-full md:w-3/4 rounded-3xl"
                       height={104}
                       width={104}
@@ -31,50 +41,22 @@ export const Choice: FC<IChoiceProps> = ({ data, hanleClick }) => {
                 <span className="flex justify-start">Chọn thuật ngữ đúng</span>
                 <div className="mt-4 flex justify-center">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 md:mx-4 w-full">
-                    <Button
-                      type="primary"
-                      ghost
-                      size="large"
-                      className="rounded-md p-4 text-left"
-                      style={{ color: 'black' }}
-                      onClick={() => hanleClick('A')}
-                    >
-                      <Badge count={1} className="mr-4" color={'blue'} />
-                      /spekˈteɪ.t̬ɚ/
-                    </Button>
-                    <Button
-                      type="primary"
-                      ghost
-                      size="large"
-                      className="rounded-md p-4 text-left"
-                      style={{ color: 'black' }}
-                      onClick={() => hanleClick('B')}
-                    >
-                      <Badge count={1} className="mr-4" color={'blue'} />
-                      /spekˈteɪ.t̬ɚ/
-                    </Button>
-                    <Button
-                      type="primary"
-                      ghost
-                      size="large"
-                      className="rounded-md p-4 text-left"
-                      style={{ color: 'black' }}
-                      onClick={() => hanleClick('C')}
-                    >
-                      <Badge count={1} className="mr-4" color={'blue'} />
-                      /spekˈteɪ.t̬ɚ/
-                    </Button>
-                    <Button
-                      type="primary"
-                      ghost
-                      size="large"
-                      className="rounded-md p-4 text-left"
-                      style={{ color: 'black' }}
-                      onClick={() => hanleClick('D')}
-                    >
-                      <Badge count={1} className="mr-4" color={'blue'} />
-                      /spekˈteɪ.t̬ɚ/
-                    </Button>
+                    {data.choices?.map((item: any, index: number) => (
+                      <>
+                        <Button
+                          key={index}
+                          type="primary"
+                          ghost
+                          size="large"
+                          className="rounded-md p-4 text-left"
+                          style={{ color: 'black' }}
+                          onClick={() => handle(item)}
+                        >
+                          <Badge count={index + 1} className="mr-4" color={'blue'} />
+                          {item}
+                        </Button>
+                      </>
+                    ))}
                   </div>
                 </div>
               </div>

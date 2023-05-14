@@ -1,7 +1,12 @@
-import { ReactNode, useState } from 'react';
-import { Layout, theme, Menu, Drawer, Button } from 'antd';
-import { MenuOutlined } from '@ant-design/icons';
+import { ReactNode, useState, useEffect } from 'react';
+import { Layout, theme, Menu, Drawer, Button, Avatar, Dropdown } from 'antd';
+import { MenuOutlined, SmileOutlined } from '@ant-design/icons';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useAuth } from '@/hooks';
+import { UserForm } from '@/containers/user';
+import type { MenuProps } from 'antd';
 
 interface IHomeLayoutProps {
   children: ReactNode;
@@ -16,10 +21,74 @@ export const HomeLayout = ({ children }: IHomeLayoutProps) => {
 
   const [open, setOpen] = useState(false);
 
+  const router = useRouter();
+
+  const path = router.pathname;
+
+  const [active, setActive] = useState<string>('0');
+
+  const { getUser, logout } = useAuth();
+
+  const [info, setInfo] = useState<boolean>(false);
+
+  const viewInfo = () => {
+    setInfo(true);
+  };
+
+  const onCloseUser = (isRefresh: boolean) => {
+    setInfo(false);
+  };
+
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: 'Thông tin tài khoản',
+      onClick: () => viewInfo(),
+    },
+    {
+      key: '2',
+      label: (
+        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+          Đổi mật khẩu
+        </a>
+      ),
+    },
+    {
+      key: '3',
+      danger: true,
+      label: 'Đăng xuất',
+      onClick: () => {
+        logout();
+        router.push('/login');
+      },
+    },
+  ];
+
+  const getActive = (path: string) => {
+    const pathName = path.split('/');
+    switch (pathName[1]) {
+      case '':
+        return '0';
+      case 'course':
+        return '1';
+      case 'exam':
+        return '2';
+      case 'flashcard':
+        return '3';
+      default:
+        return '0';
+    }
+  };
+
+  useEffect(() => {
+    setActive(getActive(path));
+  }, [path]);
+
   const menuItem = [
     {
       key: '0',
       label: 'Trang chủ',
+      onClick: () => router.push('/'),
     },
     {
       key: '1',
@@ -32,6 +101,7 @@ export const HomeLayout = ({ children }: IHomeLayoutProps) => {
     {
       key: '3',
       label: 'Flashcard',
+      onClick: () => router.push('/flashcard'),
     },
   ];
 
@@ -64,6 +134,7 @@ export const HomeLayout = ({ children }: IHomeLayoutProps) => {
             mode="horizontal"
             defaultSelectedKeys={['0']}
             items={menuItem}
+            selectedKeys={[active]}
             className="hidden md:inline justify-center text-gray-700 text-base font-medium space-x-5 border-b-0"
           />
           <div className="px-4 inline md:hidden">
@@ -75,25 +146,54 @@ export const HomeLayout = ({ children }: IHomeLayoutProps) => {
                 defaultSelectedKeys={['0']}
                 items={menuItem}
                 className="text-gray-500 font-semibold space-y-5 border-none"
+                selectedKeys={[active]}
               />
               <div className=" flex flex-col space-y-5 mt-10">
-                <Button type="primary" className="rounded-full align-middle font-medium">
-                  Đăng nhập
-                </Button>
-                <Button type="primary" danger className="rounded-full align-middle font-medium">
-                  Đăng ký
-                </Button>
+                {!getUser() && (
+                  <>
+                    <Link href="/login">
+                      <Button type="primary" className="rounded-full align-middle font-medium">
+                        Đăng nhập
+                      </Button>
+                    </Link>
+                    <Link href="/register">
+                      <Button type="primary" danger className="rounded-full align-middle font-medium">
+                        Đăng ký
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </Drawer>
           </div>
           <div className="px-4 hidden md:inline">
             <div className=" flex justify-center items-center align-middle space-x-5 h-full invisible md:visible">
-              <Button type="primary" size="large" className="rounded-full align-middle font-medium">
-                Đăng nhập
-              </Button>
-              <Button type="primary" size="large" danger className="rounded-full align-middle font-medium">
-                Đăng ký
-              </Button>
+              {!getUser() && (
+                <>
+                  <Link href="/login">
+                    <Button type="primary" size="large" className="rounded-full align-middle font-medium">
+                      Đăng nhập
+                    </Button>
+                  </Link>
+                  <Link href="/register">
+                    <Button type="primary" size="large" danger className="rounded-full align-middle font-medium">
+                      Đăng ký
+                    </Button>
+                  </Link>
+                </>
+              )}
+              {getUser() && (
+                <Dropdown menu={{ items }}>
+                  <div className="flex items-center space-x-3 mx-12">
+                    <Avatar size="large" style={{ backgroundColor: '#7265e6', verticalAlign: 'middle' }}>
+                      {getUser().name}
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="text-base font-medium">{getUser().name}</span>
+                    </div>
+                  </div>
+                </Dropdown>
+              )}
             </div>
           </div>
         </Header>
@@ -112,6 +212,7 @@ export const HomeLayout = ({ children }: IHomeLayoutProps) => {
           Ant Design ©2023 Created by Ant UED
         </Footer>
       </Layout>
+      <UserForm action="view" isOpen={info} onClose={onCloseUser} />
     </>
   );
 };
