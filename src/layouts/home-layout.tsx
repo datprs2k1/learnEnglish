@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from '@/hooks';
 import { UserForm } from '@/containers/user';
 import type { MenuProps } from 'antd';
+import { RouteGuard } from '@/components/home';
 
 interface IHomeLayoutProps {
   children: ReactNode;
@@ -114,7 +115,7 @@ export const HomeLayout = ({ children }: IHomeLayoutProps) => {
   };
 
   return (
-    <>
+    <RouteGuard>
       <Layout className="min-h-screen">
         <Header
           style={{ background: colorBgContainer, padding: 0, position: 'sticky', top: 0, zIndex: 1 }}
@@ -213,6 +214,6 @@ export const HomeLayout = ({ children }: IHomeLayoutProps) => {
         </Footer>
       </Layout>
       <UserForm action="view" isOpen={info} onClose={onCloseUser} />
-    </>
+    </RouteGuard>
   );
 };
