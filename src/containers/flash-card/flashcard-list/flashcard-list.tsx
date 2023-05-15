@@ -3,7 +3,7 @@ import { FC, useState, useEffect } from 'react';
 import { FlashCardListItem } from './flashcard-list-item';
 import Link from 'next/link';
 import { PlusOutlined } from '@ant-design/icons';
-import { FlashCardListForm } from '@/containers';
+import { FlashCardListForm } from '@/containers/flash-card';
 import { useFlashCard } from '@/hooks';
 import { useSWRConfig } from 'swr';
 

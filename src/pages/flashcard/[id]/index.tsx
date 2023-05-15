@@ -1,6 +1,6 @@
 import useSWR, { useSWRConfig } from 'swr';
 import { Button, Space, notification, Popconfirm } from 'antd';
-import { FlashCardForm, FlashCardListForm, FlashCardListWord } from '@/containers';
+import { FlashCardForm, FlashCardListForm, FlashCardListWord } from '@/containers/flash-card';
 import { HomeLayout } from '@/layouts';
 import Link from 'next/link';
 import { NextPageWithLayout } from '@/models';

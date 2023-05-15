@@ -1,4 +1,4 @@
-import { FlashCardCarousel } from '@/containers';
+import { FlashCardCarousel } from '@/containers/flash-card';
 import { HomeLayout } from '@/layouts';
 import { NextPageWithLayout } from '@/models';
 import { useState, useEffect } from 'react';

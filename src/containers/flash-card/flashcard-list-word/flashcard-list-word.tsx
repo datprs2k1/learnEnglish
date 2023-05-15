@@ -22,7 +22,9 @@ export const FlashCardListWord: FC<IFlashCardListWordProps> = ({ data, id, userN
         <Col span={6}>
           <div className="bg-slate-200 rounded-lg py-4">
             <div className="flex justify-center items-center">
-              <Avatar size={64} icon={<UserOutlined />} />
+              <Avatar size={64} style={{ backgroundColor: '#7265e6', verticalAlign: 'middle' }}>
+                {userName}
+              </Avatar>
             </div>
             <h1 className="text-center mt-5">{userName}</h1>
           </div>

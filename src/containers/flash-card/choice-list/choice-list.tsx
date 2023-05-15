@@ -21,9 +21,10 @@ export const ChoiceList: FC<IChoiceListProps> = ({ data, id }) => {
   useEffect(() => {
     //get ramdom choice
     let a = data.sort(() => Math.random() - 0.5);
-    var choices = a.map((x) => x.definition).sort(() => Math.random() - 0.5);
+    var choices = a.map((x) => x.definition);
 
     a = a.map((x, i) => {
+      choices = choices.sort(() => Math.random() - 0.5);
       x.choices = choices.filter((y) => y !== x.definition).slice(0, 3);
       x.choices.push(x.definition);
       x.choices = x.choices.sort(() => Math.random() - 0.5);

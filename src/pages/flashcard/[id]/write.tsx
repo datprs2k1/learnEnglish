@@ -3,7 +3,7 @@ import { HomeLayout } from '@/layouts';
 import { NextPageWithLayout } from '@/models';
 import { useFlashCard } from '@/hooks';
 import { useRouter } from 'next/router';
-import { WordList } from '@/containers';
+import { WordList } from '@/containers/flash-card';
 interface IWriteProps {}
 
 export const Write: NextPageWithLayout = (props) => {

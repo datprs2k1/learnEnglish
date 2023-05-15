@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { ChoiceList } from '@/containers';
+import { ChoiceList } from '@/containers/flash-card';
 import { HomeLayout } from '@/layouts';
 import { NextPageWithLayout } from '@/models';
 import { useFlashCard } from '@/hooks';

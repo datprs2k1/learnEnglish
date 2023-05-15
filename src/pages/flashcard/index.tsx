@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { Grid, Tabs, TabsProps, Layout } from 'antd';
-import { FlashCardList } from '@/containers';
+import { FlashCardList } from '@/containers/flash-card';
 import { NextPageWithLayout } from '@/models';
 import { HomeLayout } from '@/layouts';
 import { useFlashCard } from '@/hooks';

@@ -48,7 +48,6 @@ export const Choice: FC<IChoiceProps> = ({ data, hanleClick, id }) => {
                           type="primary"
                           ghost
                           size="large"
-                          className="rounded-md p-4 text-left"
                           style={{ color: 'black' }}
                           onClick={() => handle(item)}
                         >

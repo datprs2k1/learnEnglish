@@ -61,7 +61,7 @@ export const FlashCardCarousel: FC<IFlashCardCarouselProps> = ({ data, handleCha
                 size="large"
                 shape="circle"
                 icon={<LeftOutlined />}
-                onClick={() => onLearn(1)}
+                onClick={() => carousel.current?.prev()}
                 ghost
               />
             </ConfigProvider>
@@ -80,7 +80,7 @@ export const FlashCardCarousel: FC<IFlashCardCarouselProps> = ({ data, handleCha
                 size="large"
                 shape="circle"
                 icon={<RightOutlined />}
-                onClick={() => onLearn(1)}
+                onClick={() => carousel.current?.next()}
                 ghost
               />
             </ConfigProvider>
