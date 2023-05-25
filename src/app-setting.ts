@@ -6,4 +6,5 @@ export const app = {
   REFRESH_TOKEN_URL: '/User/refresh',
   FLASHCARD_URL: '/FlashCard',
   GET_USER_INFO_URL: '/User',
+  GET_ALL_USERS_URL: '/Admin/User',
 };
