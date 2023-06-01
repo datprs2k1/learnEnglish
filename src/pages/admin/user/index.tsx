@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useUser } from '@/hooks';
 
 export const UserIndex: NextPageWithLayout = () => {
-  const columns = [
+  const columns: any = [
     {
       title: 'ID',
       dataIndex: 'id',
@@ -62,17 +62,20 @@ export const UserIndex: NextPageWithLayout = () => {
 
   const { getAllUsers } = useUser();
 
-  const { data } = useSWR('/admin/user', () => getAllUsers());
+  const { data }: any = useSWR('/admin/user', () => getAllUsers());
 
-  const dataFilter = () => {
-    if (!keyword) return data;
+  const dataFilter = (): any => {
+    if (!keyword) return Array.isArray(data) && data;
 
-    return data.filter(
-      (item) =>
-        item.id === Number(keyword) ||
-        item.name.toLowerCase().includes(keyword.toLowerCase()) ||
-        item.email.toLowerCase().includes(keyword.toLowerCase()) ||
-        item.role.toLowerCase().includes(keyword.toLowerCase())
+    return (
+      Array.isArray(data) &&
+      data.filter(
+        (item) =>
+          item.id === Number(keyword) ||
+          item.name.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.email.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.role.toLowerCase().includes(keyword.toLowerCase())
+      )
     );
   };
 
@@ -86,7 +89,6 @@ export const UserIndex: NextPageWithLayout = () => {
           <Search
             allowClear
             type="text"
-            label="Search"
             className="w-36 md:w-72"
             enterButton
             onChange={(e) => setKeyword(e.target.value)}

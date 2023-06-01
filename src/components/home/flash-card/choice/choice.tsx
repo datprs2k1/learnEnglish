@@ -8,7 +8,13 @@ interface IChoiceProps {
 }
 
 export const Choice: FC<IChoiceProps> = ({ data, hanleClick, id }) => {
-  const handle = (answer: any) => {};
+  const handle = (answer: any) => {
+    if (answer === data.definition) {
+      hanleClick(true);
+    } else {
+      hanleClick(false);
+    }
+  };
 
   return (
     <>

@@ -11,7 +11,7 @@ interface IAdminLayoutProps {
   children: React.ReactNode;
 }
 
-export const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
+export const AdminLayout = ({ children }: IAdminLayoutProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
